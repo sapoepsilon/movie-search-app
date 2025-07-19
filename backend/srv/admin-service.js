@@ -24,11 +24,19 @@ export default cds.service.impl(async function() {
 
   this.before('UPDATE', 'Movies', async (req) => {
     const movie = req.data
+    const movieId = req.params[0] || req.params.ID
     
+    // Only validate imdbID uniqueness if it's actually being changed
     if (movie.imdbID) {
-      const existing = await SELECT.one.from(Movies).where`imdbID = ${movie.imdbID} AND ID != ${req.params[0]}`
-      if (existing) {
-        req.error(409, `Movie with imdbID ${movie.imdbID} already exists`)
+      // Get the current movie to compare imdbID
+      const currentMovie = await SELECT.one.from(Movies).where`ID = ${movieId}`
+      
+      // Only check for duplicates if the imdbID is being changed
+      if (currentMovie && currentMovie.imdbID !== movie.imdbID) {
+        const existing = await SELECT.one.from(Movies).where`imdbID = ${movie.imdbID}`
+        if (existing) {
+          req.error(409, `Movie with imdbID ${movie.imdbID} already exists`)
+        }
       }
     }
 
