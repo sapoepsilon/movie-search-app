@@ -14,7 +14,18 @@
   "author": "",
   "license": "ISC",
   "type": "module",
+  "cds": {
+    "requires": {
+      "db": {
+        "kind": "sqlite",
+        "credentials": {
+          "database": ":memory:"
+        }
+      }
+    }
+  },
   "dependencies": {
+    "@cap-js/sqlite": "^2.0.2",
     "@sap/cds": "^9.1.0",
     "@sap/cds-dk": "^9.1.1"
   },
