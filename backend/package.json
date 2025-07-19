@@ -21,6 +21,9 @@
         "credentials": {
           "database": ":memory:"
         }
+      },
+      "auth": {
+        "impl": "srv/auth/api-key-auth.cjs"
       }
     }
   },

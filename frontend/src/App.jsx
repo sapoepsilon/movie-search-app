@@ -1,106 +1,38 @@
-import { useState, useCallback } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
-import SearchBox from './components/SearchBox'
-import SearchInfo from './components/SearchInfo'
-import FilterControls from './components/FilterControls'
-import MovieList from './components/MovieList'
-import Pagination from './components/Pagination'
-import { searchMovies } from './services/movieApi'
+import PublicSearch from './pages/PublicSearch'
+import AdminLogin from './pages/AdminLogin'
+import AdminLayout from './components/admin/AdminLayout'
+import { useAuth } from './contexts/AuthContext'
 
 function App() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [movies, setMovies] = useState([])
-  const [totalResults, setTotalResults] = useState(0)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [selectedType, setSelectedType] = useState('')
+  const { isLoading } = useAuth()
 
-  const handleSearch = useCallback(async (term, page = 1, type = selectedType) => {
-    if (!term?.trim()) return
-
-    setLoading(true)
-    setError(null)
-    setSearchTerm(term)
-    setCurrentPage(page)
-
-    try {
-      const result = await searchMovies(term, page, type)
-      
-      if (result.Response === 'True') {
-        setMovies(result.Search || [])
-        setTotalResults(parseInt(result.totalResults) || 0)
-      } else {
-        setMovies([])
-        setTotalResults(0)
-        setError(result.Error || 'Search failed')
-      }
-    } catch (err) {
-      setError('Network error occurred')
-      setMovies([])
-      setTotalResults(0)
-    } finally {
-      setLoading(false)
-    }
-  }, [selectedType])
-
-  const handlePageChange = useCallback((page) => {
-    if (searchTerm) {
-      handleSearch(searchTerm, page)
-    }
-  }, [searchTerm, handleSearch])
-
-  const handleTypeChange = useCallback((type) => {
-    setSelectedType(type)
-    if (searchTerm) {
-      handleSearch(searchTerm, 1, type)
-    }
-  }, [searchTerm, handleSearch])
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg">Loading...</div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <Header />
-      
-      <main role="main" className="container mx-auto px-4 py-8 flex-1 flex flex-col">
-        <div data-testid="search-container" className="mb-8">
-          <SearchBox onSearch={handleSearch} loading={loading} />
-        </div>
-
-        {(searchTerm || loading) && (
-          <>
-            <FilterControls
-              selectedType={selectedType}
-              onTypeChange={handleTypeChange}
-            />
-            <div className="mb-6">
-              <SearchInfo 
-                searchTerm={searchTerm}
-                totalResults={totalResults}
-                currentPage={currentPage}
-                loading={loading}
-              />
-            </div>
-          </>
-        )}
-        
-        <div data-testid="movie-list-container" className="flex-1">
-          <MovieList 
-            movies={movies}
-            loading={loading}
-            error={error}
-          />
-        </div>
-
-        {totalResults > 10 && !loading && !error && (
-          <div className="mt-auto pt-8">
-            <Pagination
-              currentPage={currentPage}
-              totalResults={totalResults}
-              onPageChange={handlePageChange}
-            />
-          </div>
-        )}
-      </main>
+      <Routes>
+        <Route 
+          path="/" 
+          element={
+            <>
+              <Header />
+              <PublicSearch />
+            </>
+          } 
+        />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/*" element={<AdminLayout />} />
+      </Routes>
     </div>
   )
 }

@@ -12,7 +12,7 @@ function MovieItem({ movie }) {
 
   return (
     <article role="article">
-      <Card className="overflow-hidden transition-shadow hover:shadow-lg">
+      <Card className="overflow-hidden transition-shadow hover:shadow-lg h-full flex flex-col">
         <div className="aspect-[3/4] relative bg-muted">
           {hasPoster ? (
             <img
@@ -33,7 +33,7 @@ function MovieItem({ movie }) {
           )}
         </div>
         
-        <CardContent className="p-4">
+        <CardContent className="p-4 flex-1 flex flex-col">
           <h3 className="font-semibold text-sm line-clamp-2 mb-2">
             {movie.Title}
           </h3>
@@ -44,27 +44,29 @@ function MovieItem({ movie }) {
             </Badge>
           </div>
           
-          <Button
-            asChild
-            variant="outline"
-            size="sm"
-            className="w-full h-8"
-          >
-            <a
-              href={imdbUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`View ${movie.Title} on IMDB`}
+          <div className="mt-auto">
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="w-full h-8"
             >
-              <img 
-                src={imdbLogo} 
-                alt="IMDB" 
-                className="h-4 w-8 mr-2"
-              />
-              View on IMDB
-              <ExternalLink className="h-3 w-3 ml-2" />
-            </a>
-          </Button>
+              <a
+                href={imdbUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`View ${movie.Title} on IMDB`}
+              >
+                <img 
+                  src={imdbLogo} 
+                  alt="IMDB" 
+                  className="h-4 w-8 mr-2"
+                />
+                View on IMDB
+                <ExternalLink className="h-3 w-3 ml-2" />
+              </a>
+            </Button>
+          </div>
         </CardContent>
         
         <CardFooter className="px-4 pb-4 pt-0">

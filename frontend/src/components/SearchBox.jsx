@@ -36,7 +36,7 @@ function SearchBox({ onSearch, loading = false }) {
     <div className="relative flex items-center gap-2">
       <div className="relative flex-1">
         <Input
-          type="search"
+          type="text"
           placeholder="Search movies..."
           value={value}
           onChange={(e) => setValue(e.target.value)}

@@ -43,7 +43,7 @@ describe('Movie Search Integration', () => {
 
     render(<App />)
 
-    const searchInput = screen.getByRole('searchbox')
+    const searchInput = screen.getByRole('textbox')
     fireEvent.change(searchInput, { target: { value: 'shawshank' } })
 
     await waitFor(() => {
@@ -62,7 +62,7 @@ describe('Movie Search Integration', () => {
 
     render(<App />)
 
-    const searchInput = screen.getByRole('searchbox')
+    const searchInput = screen.getByRole('textbox')
     fireEvent.change(searchInput, { target: { value: 'nonexistent' } })
 
     await waitFor(() => {
@@ -82,7 +82,7 @@ describe('Movie Search Integration', () => {
 
     render(<App />)
 
-    const searchInput = screen.getByRole('searchbox')
+    const searchInput = screen.getByRole('textbox')
     fireEvent.change(searchInput, { target: { value: 'test' } })
 
     await waitFor(() => {
@@ -116,7 +116,7 @@ describe('Movie Search Integration', () => {
 
     render(<App />)
 
-    const searchInput = screen.getByRole('searchbox')
+    const searchInput = screen.getByRole('textbox')
     fireEvent.change(searchInput, { target: { value: 'godfather' } })
 
     await waitFor(() => {
@@ -142,7 +142,7 @@ describe('Movie Search Integration', () => {
 
     render(<App />)
 
-    const searchInput = screen.getByRole('searchbox')
+    const searchInput = screen.getByRole('textbox')
     fireEvent.change(searchInput, { target: { value: 'test' } })
 
     await waitFor(() => {
@@ -160,7 +160,7 @@ describe('Movie Search Integration', () => {
 
     render(<App />)
 
-    const searchInput = screen.getByRole('searchbox')
+    const searchInput = screen.getByRole('textbox')
     fireEvent.change(searchInput, { target: { value: 'test' } })
 
     await waitFor(() => {

@@ -24,6 +24,10 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:4004',
         changeOrigin: true
+      },
+      '/admin': {
+        target: 'http://localhost:4004',
+        changeOrigin: true
       }
     }
   }

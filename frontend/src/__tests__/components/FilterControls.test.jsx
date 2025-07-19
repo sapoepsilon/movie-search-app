@@ -9,8 +9,24 @@ describe('FilterControls', () => {
     mockOnTypeChange.mockClear()
   })
 
-  it('renders all filter buttons', () => {
+  it('renders filter dropdown trigger', () => {
     render(<FilterControls selectedType="" onTypeChange={mockOnTypeChange} />)
+    
+    expect(screen.getByTestId('type-filter-trigger')).toBeInTheDocument()
+    expect(screen.getByText('All Types')).toBeInTheDocument()
+  })
+
+  it('shows selected filter in trigger', () => {
+    render(<FilterControls selectedType="movie" onTypeChange={mockOnTypeChange} />)
+    
+    expect(screen.getByText('Movies')).toBeInTheDocument()
+  })
+
+  it('opens dropdown when trigger is clicked', () => {
+    render(<FilterControls selectedType="" onTypeChange={mockOnTypeChange} />)
+    
+    const trigger = screen.getByTestId('type-filter-trigger')
+    fireEvent.click(trigger)
     
     expect(screen.getByTestId('filter-all')).toBeInTheDocument()
     expect(screen.getByTestId('filter-movie')).toBeInTheDocument()
@@ -18,40 +34,39 @@ describe('FilterControls', () => {
     expect(screen.getByTestId('filter-episode')).toBeInTheDocument()
   })
 
-  it('highlights selected filter', () => {
-    render(<FilterControls selectedType="movie" onTypeChange={mockOnTypeChange} />)
-    
-    const movieButton = screen.getByTestId('filter-movie')
-    const allButton = screen.getByTestId('filter-all')
-    
-    expect(movieButton).toHaveClass('bg-primary')
-    expect(allButton).not.toHaveClass('bg-primary')
-  })
-
-  it('calls onTypeChange when filter is clicked', () => {
+  it('calls onTypeChange when dropdown item is clicked', () => {
     render(<FilterControls selectedType="" onTypeChange={mockOnTypeChange} />)
     
-    const movieButton = screen.getByTestId('filter-movie')
-    fireEvent.click(movieButton)
+    const trigger = screen.getByTestId('type-filter-trigger')
+    fireEvent.click(trigger)
+    
+    const movieOption = screen.getByTestId('filter-movie')
+    fireEvent.click(movieOption)
     
     expect(mockOnTypeChange).toHaveBeenCalledWith('movie')
   })
 
-  it('handles empty string for "All" filter', () => {
+  it('handles empty string for "All Types" filter', () => {
     render(<FilterControls selectedType="movie" onTypeChange={mockOnTypeChange} />)
     
-    const allButton = screen.getByTestId('filter-all')
-    fireEvent.click(allButton)
+    const trigger = screen.getByTestId('type-filter-trigger')
+    fireEvent.click(trigger)
+    
+    const allOption = screen.getByTestId('filter-all')
+    fireEvent.click(allOption)
     
     expect(mockOnTypeChange).toHaveBeenCalledWith('')
   })
 
-  it('shows correct button text', () => {
+  it('shows correct dropdown options', () => {
     render(<FilterControls selectedType="" onTypeChange={mockOnTypeChange} />)
     
-    expect(screen.getByText('All')).toBeInTheDocument()
-    expect(screen.getByText('Movies')).toBeInTheDocument()
-    expect(screen.getByText('Series')).toBeInTheDocument()
-    expect(screen.getByText('Episodes')).toBeInTheDocument()
+    const trigger = screen.getByTestId('type-filter-trigger')
+    fireEvent.click(trigger)
+    
+    expect(screen.getByTestId('filter-all')).toBeInTheDocument()
+    expect(screen.getByTestId('filter-movie')).toBeInTheDocument()
+    expect(screen.getByTestId('filter-series')).toBeInTheDocument()
+    expect(screen.getByTestId('filter-episode')).toBeInTheDocument()
   })
 })

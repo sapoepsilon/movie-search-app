@@ -5,7 +5,7 @@ import SearchBox from '../../components/SearchBox'
 describe('SearchBox', () => {
   it('renders input field', () => {
     render(<SearchBox onSearch={() => {}} />)
-    expect(screen.getByRole('searchbox')).toBeInTheDocument()
+    expect(screen.getByRole('textbox')).toBeInTheDocument()
   })
 
   it('shows placeholder text', () => {
@@ -17,7 +17,7 @@ describe('SearchBox', () => {
     const mockOnSearch = vi.fn()
     render(<SearchBox onSearch={mockOnSearch} />)
     
-    const input = screen.getByRole('searchbox')
+    const input = screen.getByRole('textbox')
     fireEvent.change(input, { target: { value: 'star wars' } })
     
     await waitFor(() => {
@@ -27,7 +27,7 @@ describe('SearchBox', () => {
 
   it('shows clear button when input has value', () => {
     render(<SearchBox onSearch={() => {}} />)
-    const input = screen.getByRole('searchbox')
+    const input = screen.getByRole('textbox')
     
     fireEvent.change(input, { target: { value: 'test' } })
     expect(screen.getByRole('button', { name: /clear/i })).toBeInTheDocument()
@@ -36,7 +36,7 @@ describe('SearchBox', () => {
   it('clears input when clear button clicked', () => {
     const mockOnSearch = vi.fn()
     render(<SearchBox onSearch={mockOnSearch} />)
-    const input = screen.getByRole('searchbox')
+    const input = screen.getByRole('textbox')
     
     fireEvent.change(input, { target: { value: 'test' } })
     fireEvent.click(screen.getByRole('button', { name: /clear/i }))
@@ -47,7 +47,7 @@ describe('SearchBox', () => {
   it('triggers search on Enter key', () => {
     const mockOnSearch = vi.fn()
     render(<SearchBox onSearch={mockOnSearch} />)
-    const input = screen.getByRole('searchbox')
+    const input = screen.getByRole('textbox')
     
     fireEvent.change(input, { target: { value: 'matrix' } })
     fireEvent.keyDown(input, { key: 'Enter' })

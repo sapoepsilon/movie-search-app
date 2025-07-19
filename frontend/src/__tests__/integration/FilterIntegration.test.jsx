@@ -32,7 +32,7 @@ describe('Filter Integration', () => {
     fireEvent.keyDown(searchInput, { key: 'Enter' })
 
     await waitFor(() => {
-      expect(screen.getByTestId('filter-all')).toBeInTheDocument()
+      expect(screen.getByTestId('type-filter-trigger')).toBeInTheDocument()
     })
 
     fetch.mockResolvedValueOnce({
@@ -40,6 +40,9 @@ describe('Filter Integration', () => {
       json: async () => mockResponse
     })
 
+    const filterTrigger = screen.getByTestId('type-filter-trigger')
+    fireEvent.click(filterTrigger)
+    
     const movieFilter = screen.getByTestId('filter-movie')
     fireEvent.click(movieFilter)
 
@@ -75,9 +78,12 @@ describe('Filter Integration', () => {
     fireEvent.keyDown(searchInput, { key: 'Enter' })
 
     await waitFor(() => {
-      expect(screen.getByTestId('filter-all')).toBeInTheDocument()
+      expect(screen.getByTestId('type-filter-trigger')).toBeInTheDocument()
     })
 
+    const filterTrigger = screen.getByTestId('type-filter-trigger')
+    fireEvent.click(filterTrigger)
+    
     const movieFilter = screen.getByTestId('filter-movie')
     fireEvent.click(movieFilter)
 
@@ -109,9 +115,12 @@ describe('Filter Integration', () => {
     fireEvent.keyDown(searchInput, { key: 'Enter' })
 
     await waitFor(() => {
-      expect(screen.getByTestId('filter-movie')).toBeInTheDocument()
+      expect(screen.getByTestId('type-filter-trigger')).toBeInTheDocument()
     })
 
+    const filterTrigger = screen.getByTestId('type-filter-trigger')
+    fireEvent.click(filterTrigger)
+    
     const movieFilter = screen.getByTestId('filter-movie')
     fireEvent.click(movieFilter)
 
@@ -122,6 +131,6 @@ describe('Filter Integration', () => {
       expect(fetch).toHaveBeenLastCalledWith('/api/Movies?s=second&page=1&type=movie')
     })
 
-    expect(movieFilter).toHaveClass('bg-primary')
+    expect(screen.getByText('Movies')).toBeInTheDocument()
   })
 })
