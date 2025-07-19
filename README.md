@@ -132,3 +132,25 @@ Tests cover:
 **Backend**: SAP CAP, Node.js, SQLite, Express  
 **Frontend**: React 19, React Router v7, Tailwind CSS v4, shadcn/ui  
 **Testing**: Vitest, SAP CAP Test Framework
+
+## Demo Video
+[![Watch the video](https://img.youtube.com/vi/rE9jAQ0JOGE/maxresdefault.jpg)](https://www.youtube.com/watch?v=rE9jAQ0JOGE)
+
+### Demo Pictures
+
+<details>
+<summary><strong>📸 Application Screenshots</strong></summary>
+
+| Public Search | Admin Login | Admin Dashboard |
+|---|---|---|
+| ![Public Search](demo-images/Screenshot%202025-07-19%20at%204.44.16%20PM.png) | ![Admin Login](demo-images/Screenshot%202025-07-19%20at%204.44.23%20PM.png) | ![Admin Dashboard](demo-images/Screenshot%202025-07-19%20at%204.45.04%20PM.png) |
+
+| Movie Management | Add Movie Form | Edit Movie |
+|---|---|---|
+| ![Movie Management](demo-images/Screenshot%202025-07-19%20at%204.45.12%20PM.png) | ![Add Movie](demo-images/Screenshot%202025-07-19%20at%204.45.20%20PM.png) | ![Edit Movie](demo-images/Screenshot%202025-07-19%20at%204.45.30%20PM.png) |
+
+| Movie Details |
+|---|
+| ![Movie Details](demo-images/Screenshot%202025-07-19%20at%204.45.38%20PM.png) |
+
+</details>
