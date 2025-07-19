@@ -4,23 +4,26 @@ export default cds.service.impl(async function () {
   const { Movies } = this.entities
 
   this.on('READ', 'Movies', async (req) => {
-    return SELECT.from(Movies)
-  })
-
-  this.on('GET', '/api/movies', async (req) => {
-    const { s: searchTerm, i: imdbID, page = 1, type } = req.query
+    let searchTerm, imdbID, page = 1, type
+    
+    if (req.http && req.http.req && req.http.req.url) {
+      const url = new URL(req.http.req.url, 'http://localhost')
+      const searchParams = url.searchParams
+      searchTerm = searchParams.get('s')
+      imdbID = searchParams.get('i')
+      page = parseInt(searchParams.get('page')) || 1
+      type = searchParams.get('type')
+    }
 
     if (imdbID) {
       if (!imdbID.match(/^tt\d+$/)) {
-        req.reject(400, { Response: 'False', Error: 'Invalid IMDb ID.' })
-        return
+        return { Response: 'False', Error: 'Invalid IMDb ID.' }
       }
 
       const movie = await SELECT.one.from(Movies).where({ imdbID })
       
       if (!movie) {
-        req.reject(404, { Response: 'False', Error: 'Movie not found!' })
-        return
+        return { Response: 'False', Error: 'Movie not found!' }
       }
 
       return {
@@ -41,54 +44,62 @@ export default cds.service.impl(async function () {
       }
     }
 
-    if (!searchTerm) {
-      req.reject(400, { Response: 'False', Error: 'Parameter \'s\' is required.' })
-      return
+    if (searchTerm) {
+      if (type && !['movie', 'series', 'episode'].includes(type)) {
+        return { Response: 'False', Error: 'Invalid type parameter.' }
+      }
+
+      const pageSize = 10
+      const offset = (parseInt(page) - 1) * pageSize
+
+      const totalCount = await SELECT.from(Movies)
+        .where(`Title like '%${searchTerm}%' or searchTerms like '%${searchTerm.toLowerCase()}%'`)
+        .columns('count(*) as count')
+      
+      let total
+      if (type) {
+        const totalCountWithType = await SELECT.from(Movies)
+          .where(`(Title like '%${searchTerm}%' or searchTerms like '%${searchTerm.toLowerCase()}%') and Type = '${type}'`)
+          .columns('count(*) as count')
+        total = totalCountWithType[0].count
+      } else {
+        total = totalCount[0].count
+      }
+
+      if (total === 0) {
+        return { Response: 'False', Error: 'Movie not found!' }
+      }
+
+      let movies
+      if (type) {
+        movies = await SELECT.from(Movies)
+          .where(`(Title like '%${searchTerm}%' or searchTerms like '%${searchTerm.toLowerCase()}%') and Type = '${type}'`)
+          .limit(pageSize, offset)
+      } else {
+        movies = await SELECT.from(Movies)
+          .where(`Title like '%${searchTerm}%' or searchTerms like '%${searchTerm.toLowerCase()}%'`)
+          .limit(pageSize, offset)
+      }
+
+      const searchResults = movies.map(movie => ({
+        imdbID: movie.imdbID,
+        Title: movie.Title,
+        Year: movie.Year,
+        Type: movie.Type,
+        Poster: movie.Poster
+      }))
+
+      return {
+        Search: searchResults,
+        totalResults: total.toString(),
+        Response: 'True'
+      }
     }
 
-    if (type && !['movie', 'series', 'episode'].includes(type)) {
-      req.reject(400, { Response: 'False', Error: 'Invalid type parameter.' })
-      return
+    if (!searchTerm && !imdbID) {
+      return { Response: 'False', Error: 'Parameter \'s\' is required.' }
     }
 
-    const pageSize = 10
-    const offset = (parseInt(page) - 1) * pageSize
-
-    let whereClause = {
-      or: [
-        { Title: { like: `%${searchTerm}%` } },
-        { searchTerms: { like: `%${searchTerm.toLowerCase()}%` } }
-      ]
-    }
-
-    if (type) {
-      whereClause = { and: [whereClause, { Type: type }] }
-    }
-
-    const totalCount = await SELECT.from(Movies).where(whereClause).columns('count(*) as count')
-    const total = totalCount[0].count
-
-    if (total === 0) {
-      return { Response: 'False', Error: 'Movie not found!' }
-    }
-
-    const movies = await SELECT.from(Movies)
-      .where(whereClause)
-      .limit(pageSize)
-      .offset(offset)
-
-    const searchResults = movies.map(movie => ({
-      imdbID: movie.imdbID,
-      Title: movie.Title,
-      Year: movie.Year,
-      Type: movie.Type,
-      Poster: movie.Poster
-    }))
-
-    return {
-      Search: searchResults,
-      totalResults: total.toString(),
-      Response: 'True'
-    }
+    return SELECT.from(Movies)
   })
 })
